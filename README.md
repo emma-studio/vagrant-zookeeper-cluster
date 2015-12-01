@@ -36,6 +36,8 @@ Ideal for development cluster on a laptop with at least 4GB of memory.
 11. Run ```vagrant up``` to create the VM.
 12. Run ```vagrant ssh``` to get into your VM.
 13. Run ```vagrant destroy``` when you want to destroy and get rid of the VM.
+14. set up hadoop cluster by following steps in 5 Post Provisioning until test yarn step
+15. test kafka by following steps in Test Kafka part
 
 
 # 4. Modifying scripts for adapting to your environment
@@ -140,6 +142,30 @@ $SPARK_HOME/bin/spark-shell --master spark://node21:7077
 ```
 
 Then go here https://spark.apache.org/docs/latest/quick-start.html to start the tutorial. Most likely, you will have to load data into HDFS to make the tutorial work (Spark cannot read data on the local file system).
+
+### Test Kafka using shell
+first vagrant ssh to a node and check if /tmp/zookeeper exists on this node (Note: /tmp/zookeeper is the dataDir propery specified in zookeeper.properties under /usr/local/kafka/config and zoo.cfg under /usr/local/zookeeper/conf. You can define the directory by yourself, but should change them in zookeeper.properties and in zoo.cfg). This folder must exist before running following commands.
+
+launch this command to start zookeeper
+```
+$[vagrant@node] /usr/local/kafka/bin/zookeeper-server-start.sh /usr/local/kafka/config/zookeeper.properties > /tmp/zookeeper.log &
+```
+
+or 
+```
+$[vagrant@node] sudo vi /tmp/zookeeper.log
+```
+write nothing then save exit (press esc and press :wq)
+```
+$[vagrant@node] /usr/local/kafka/bin/zookeeper-server-start.sh /usr/local/kafka/config/zookeeper.properties &
+```
+
+launch this command to start kafka broker (assume you are on node 21 now)
+```
+$[vagrant@node-21~] /usr/local/kafka/bin/kafka-server-start.sh /usr/local/kafka/config/server21.properties &
+```
+
+then test to create topics and start produce and consumer commands. (Not sure how to do this now)
 
 # 6. Web UI
 You can check the following URLs to monitor the Hadoop daemons.
