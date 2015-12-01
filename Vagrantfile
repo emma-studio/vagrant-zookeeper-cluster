@@ -7,6 +7,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 		config.vm.define "node-#{i}" do |node|
 			node.vm.box = "centos65"
 			node.vm.box_url = "http://files.brianbirkinbine.com/vagrant-centos-65-i386-minimal.box"
+			# by default, it is false
+			config.ssh.forward_agent = true
+			# configure each node's configuration, by default, it is 512MB memory, too small for this project
 			node.vm.provider "virtualbox" do |v|
 			  v.name = "node#{i}"
 			  v.customize ["modifyvm", :id, "--memory", "1024"]
@@ -16,6 +19,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 			else
 				node.vm.network :private_network, ip: "10.211.55.1#{i}"
 			end
+			# set public_network for zookeeper nodes
+			node.vm.netword :public_network
 			node.vm.hostname = "node#{i}"
 			node.vm.provision "shell", path: "scripts/setup-centos.sh"
 			node.vm.provision "shell" do |s|
@@ -46,7 +51,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 				s.path = "scripts/setup-spark-slaves.sh"
 				s.args = "-s 23 -t #{numNodes}"
 			end
-			node.vm.provision "shell", path: "scripts/setup-zookeeper.sh"
+			node.vm.provision "shell" do |s|
+				s.path = "scripts/setup-zookeeper.sh"
+				s.args = "-s #{i}"
+			end
+			# node.vm.provision "shell", path: "scripts/setup-zookeeper.sh"
 			node.vm.provision "shell", path: "scripts/setup-kafka.sh"
 		end
 	end
