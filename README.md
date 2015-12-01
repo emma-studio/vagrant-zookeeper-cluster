@@ -146,12 +146,12 @@ Then go here https://spark.apache.org/docs/latest/quick-start.html to start the 
 ### Test Kafka using shell
 first vagrant ssh to a node and check if /tmp/zookeeper exists on this node (Note: /tmp/zookeeper is the dataDir propery specified in zookeeper.properties under /usr/local/kafka/config and zoo.cfg under /usr/local/zookeeper/conf. You can define the directory by yourself, but should change them in zookeeper.properties and in zoo.cfg). This folder must exist before running following commands.
 
-launch this command to start zookeeper
+Launch this command to start zookeeper
 ```
 $[vagrant@node] /usr/local/kafka/bin/zookeeper-server-start.sh /usr/local/kafka/config/zookeeper.properties > /tmp/zookeeper.log &
 ```
 
-or 
+or do this in two steps
 ```
 $[vagrant@node] sudo vi /tmp/zookeeper.log
 ```
@@ -160,7 +160,7 @@ write nothing then save exit (press esc and press :wq)
 $[vagrant@node] /usr/local/kafka/bin/zookeeper-server-start.sh /usr/local/kafka/config/zookeeper.properties &
 ```
 
-launch this command to start kafka broker (assume you are on node 21 now)
+Next, launch this command to start kafka broker (assume you are on node 21 now)
 ```
 $[vagrant@node-21~] /usr/local/kafka/bin/kafka-server-start.sh /usr/local/kafka/config/server21.properties &
 ```
