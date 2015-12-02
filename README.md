@@ -85,31 +85,45 @@ Change $START and -s value or lines of codes containing (seq 1/$INIT_START $NUM_
 
 # 5. Post Provisioning
 After you have provisioned the cluster, you need to run some commands to initialize your Hadoop cluster. SSH into node21 using  
-```vagrant ssh node-21```
-in node-21:
+```
+vagrant ssh node-21
+```
+On node-21, the command below requires root permissions. Change to root access:
+```
 $[vagrant@node-21~] sudo su
+```
+Issue the following command:
 
-Commands below require root permissions. Change to root access using ```sudo su``` (password is "vagrant" for root user) or create a new user and grant permissions if you want to use a non-root access. In such a case, you'll need to do this on VMs.
-
-Issue the following command. 
-
-1. $[root@node-21~] $HADOOP_PREFIX/bin/hdfs namenode -format myhadoop
+1. $[root@node-21~] $HADOOP_PREFIX/bin/hdfs namenode -format
 
 ## Start Hadoop Daemons (HDFS + YARN)
-SSH into node21 (vagrant ssh node-21) and issue the following commands to start HDFS.
+Commands below sometimes require password. They are all the same (password is "vagrant", without double quotes).
+SSH into node21 
+```
+vagrant ssh node-21
+```
+And launch following commands to start HDFS.
 
-1. $[vagrant@node-21~] sudo $HADOOP_PREFIX/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR --script hdfs start namenode
-2. $[vagrant@node-21~] sudo $HADOOP_PREFIX/sbin/hadoop-daemons.sh --config $HADOOP_CONF_DIR --script hdfs start datanode
+1. ```$[vagrant@node-21~] sudo $HADOOP_PREFIX/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR --script hdfs start namenode```
+2.```$[vagrant@node-21~] sudo $HADOOP_PREFIX/sbin/hadoop-daemons.sh --config $HADOOP_CONF_DIR --script hdfs start datanode```
 
-SSH into node22 (vagrant ssh node-22) and issue the following commands to start YARN (password is vagrant).
+Start a new terminal window and SSH into node22 
+```
+vagrant ssh node-22
+```
+And implement following commands to start YARN (password is vagrant).
 
-1. $[vagrant@node-22~] sudo $HADOOP_YARN_HOME/sbin/yarn-daemon.sh --config $HADOOP_CONF_DIR start resourcemanager
-2. $[vagrant@node-22~] sudo $HADOOP_YARN_HOME/sbin/yarn-daemons.sh --config $HADOOP_CONF_DIR start nodemanager
+1. ```$[vagrant@node-22~] sudo $HADOOP_YARN_HOME/sbin/yarn-daemon.sh --config $HADOOP_CONF_DIR start resourcemanager```
+2. ```$[vagrant@node-22~] sudo $HADOOP_YARN_HOME/sbin/yarn-daemons.sh --config $HADOOP_CONF_DIR start nodemanager```
 
-After those first steps on node22, you might need to open another terminal to ssh node22 (vagrant ssh node-22) and issue the following commands
+Now, you might need to open another terminal and ssh to login node22 
+```
+vagrant ssh node-22
+```
+And run following commands
 
-3. $[vagrant@node-22~] sudo $HADOOP_YARN_HOME/sbin/yarn-daemon.sh start proxyserver --config $HADOOP_CONF_DIR
-4. $[vagrant@node-22~] sudo $HADOOP_PREFIX/sbin/mr-jobhistory-daemon.sh start historyserver --config $HADOOP_CONF_DIR
+3. ```$[vagrant@node-22~] sudo $HADOOP_YARN_HOME/sbin/yarn-daemon.sh start proxyserver --config $HADOOP_CONF_DIR```
+4. ```$[vagrant@node-22~] sudo $HADOOP_PREFIX/sbin/mr-jobhistory-daemon.sh start historyserver --config $HADOOP_CONF_DIR```
 
 ### Test YARN
 Run the following command to make sure you can run a MapReduce job.
@@ -118,13 +132,18 @@ Run the following command to make sure you can run a MapReduce job.
 yarn jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.2.jar pi 2 100
 ```
 
-## Start Spark in Standalone Mode
-SSH into node21 and issue the following command.
+## Start Spark
 
-1. $[vagrant@node-21~] sudo $SPARK_HOME/sbin/start-all.sh
+Start a new terminal and SSH to node21 
+```
+vagrant ssh node-21
+```
+And run the following command:
+
+1. ```$[vagrant@node-21~] sudo $SPARK_HOME/sbin/start-all.sh```
 
 ### Test Spark on YARN
-There is a defect in spark when deploying it on virtual nodes. Even we set JAVA_HOME correctly, it cannot find it. So we will change those codes manually by following these steps:
+Start a new termial if necessary. There is a defect in spark when deploying it on virtual nodes. Even we set JAVA_HOME correctly, it cannot find it. So we will change those codes manually by following these steps:
 ```
 $[vagrang@node-21~] sudo vi /usr/local/spark/bin/spark-class
 ```
@@ -223,4 +242,3 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-# vagrant-zookeeper-cluster
