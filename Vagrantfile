@@ -20,7 +20,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 				node.vm.network :private_network, ip: "10.211.55.1#{i}"
 			end
 			# set public_network for zookeeper nodes
-			node.vm.netword :public_network
+			# node.vm.network :public_network
 			node.vm.hostname = "node#{i}"
 			node.vm.provision "shell", path: "scripts/setup-centos.sh"
 			node.vm.provision "shell" do |s|
