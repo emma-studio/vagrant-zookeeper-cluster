@@ -2,8 +2,10 @@ Vagrant.require_version ">= 1.4.3"
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-	numNodes = 4
-	(21..24).each do |i|
+	# numNodes = 4
+	max_num = 24
+	r = max_num..21
+	(r.first).downto(r.last).each do |i|
 		config.vm.define "node-#{i}" do |node|
 			node.vm.box = "centos65"
 			node.vm.box_url = "http://files.brianbirkinbine.com/vagrant-centos-65-i386-minimal.box"
@@ -25,18 +27,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 			node.vm.provision "shell", path: "scripts/setup-centos.sh"
 			node.vm.provision "shell" do |s|
 				s.path = "scripts/setup-centos-hosts.sh"
-				s.args = "-t #{numNodes}"
+				s.args = "-t #{max_num}"
 			end
 			if i == 22
 				node.vm.provision "shell" do |s|
 					s.path = "scripts/setup-centos-ssh.sh"
-					s.args = "-s 23 -t #{numNodes}"
+					s.args = "-s 23 -t #{max_num}"
 				end
 			end
 			if i == 21
 				node.vm.provision "shell" do |s|
 					s.path = "scripts/setup-centos-ssh.sh"
-					s.args = "-s 22 -t #{numNodes}"
+					s.args = "-s 22 -t #{max_num}"
 				end
 			end
 			node.vm.provision "shell", path: "scripts/setup-java.sh"
@@ -44,12 +46,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 			node.vm.provision "shell", path: "scripts/setup-hadoop.sh"
 			node.vm.provision "shell" do |s|
 				s.path = "scripts/setup-hadoop-slaves.sh"
-				s.args = "-s 23 -t #{numNodes}"
+				s.args = "-s 23 -t #{max_num}"
 			end
 			node.vm.provision "shell", path: "scripts/setup-spark.sh"
 			node.vm.provision "shell" do |s|
 				s.path = "scripts/setup-spark-slaves.sh"
-				s.args = "-s 23 -t #{numNodes}"
+				s.args = "-s 23 -t #{max_num}"
 			end
 			node.vm.provision "shell" do |s|
 				s.path = "scripts/setup-zookeeper.sh"

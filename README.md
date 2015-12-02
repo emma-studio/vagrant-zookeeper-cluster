@@ -121,16 +121,30 @@ yarn jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.
 ## Start Spark in Standalone Mode
 SSH into node21 and issue the following command.
 
-1. $SPARK_HOME/sbin/start-all.sh
+1. $[vagrant@node-21~] sudo $SPARK_HOME/sbin/start-all.sh
 
 ### Test Spark on YARN
+There is a defect in spark when deploying it on virtual nodes. Even we set JAVA_HOME correctly, it cannot find it. So we will change those codes manually by following these steps:
+```
+$[vagrang@node-21~] sudo vi /usr/local/spark/bin/spark-class
+```
+Then revise codes where to identify java directory to these:
+```
+else
+   echo "JAVA_HOME is not set"
+   RUNNER="/usr/local/java/bin/java"
+   echo "Set RUNNER to default java directory"
+   # exit 1
+```
+Next, log out node 21 and ssh to it again. 
+
 You can test if Spark can run on YARN by issuing the following command. Try NOT to run this command on the slave nodes.
 ```
-$SPARK_HOME/bin/spark-submit --class org.apache.spark.examples.SparkPi \
+$[vagrant@node-21~] sudo $SPARK_HOME/bin/spark-submit --class org.apache.spark.examples.SparkPi \
 --master yarn-cluster \
 --num-executors 10 \
 --executor-cores 2 \
-lib/spark-examples*.jar \
+/usr/local/spark/lib/spark-examples*.jar \
 100
 ```
 
@@ -138,7 +152,7 @@ lib/spark-examples*.jar \
 Start the Spark shell using the following command. Try NOT to run this command on the slave nodes.
 
 ```
-$SPARK_HOME/bin/spark-shell --master spark://node21:7077
+$[vagrant@node-21~] sudo $SPARK_HOME/bin/spark-shell --master spark://node21:7077
 ```
 
 Then go here https://spark.apache.org/docs/latest/quick-start.html to start the tutorial. Most likely, you will have to load data into HDFS to make the tutorial work (Spark cannot read data on the local file system).
