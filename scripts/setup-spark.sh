@@ -17,7 +17,8 @@ function setupSpark {
 	echo "setup spark"
 #	mkdir -p /var/spark/conf/
 #	cp -fRp /vagrant/resources/spark/slaves /var/spark/conf/
-    cp -f /vagrant/resources/spark/slaves /usr/local/spark/conf
+    cp -f $SPARK_RES_DIR/* $SPARK_CONF_DIR
+#    cp -f /vagrant/resources/spark/slaves /usr/local/spark/conf
 }
 
 function setupEnvVars {
