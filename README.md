@@ -146,9 +146,13 @@ Then go here https://spark.apache.org/docs/latest/quick-start.html to start the 
 ### Test Kafka using shell
 first vagrant ssh to a node and check if /tmp/zookeeper exists on this node (Note: /tmp/zookeeper is the dataDir propery specified in zookeeper.properties under /usr/local/kafka/config and zoo.cfg under /usr/local/zookeeper/conf. You can define the directory by yourself, but should change them in zookeeper.properties and in zoo.cfg). This folder must exist before running following commands.
 
-Launch this command to start zookeeper
+Launch this command to start zookeeper:
+(you need in root access, so first sudo su)
 ```
-$[vagrant@node] /usr/local/kafka/bin/zookeeper-server-start.sh /usr/local/kafka/config/zookeeper.properties > /tmp/zookeeper.log &
+$[vagrant@node] sudo su
+```
+```
+$[root@node] /usr/local/kafka/bin/zookeeper-server-start.sh /usr/local/kafka/config/zookeeper.properties > /tmp/zookeeper.log &
 ```
 
 or do this in two steps
@@ -157,15 +161,27 @@ $[vagrant@node] sudo vi /tmp/zookeeper.log
 ```
 write nothing then save exit (press esc and press :wq)
 ```
-$[vagrant@node] /usr/local/kafka/bin/zookeeper-server-start.sh /usr/local/kafka/config/zookeeper.properties &
+$[vagrant@node] sudo su
+```
+```
+$[root@node] /usr/local/kafka/bin/zookeeper-server-start.sh /usr/local/kafka/config/zookeeper.properties &
 ```
 
 Next, launch this command to start kafka broker (assume you are on node 21 now)
+(Note: by default, kafka thinks Java Runtime Environment is at least 1G, so in our case, each virtual node has at most 1G memory, so you need to change KAFKA_HEAP_OPTS in kafka-server-start.sh)
+```
+$[vagrant@node] sudo vi /usr/local/kafka/bin/kafka-server-start.sh
+```
+change line of code relating to KAFKA_HEAP_OPTS in kafka-server-start.sh to (press a to insert):
+```
+export KAFKA_HEAP_OPTS="-Xmx256M -Xms128M"
+```
+save exit by pressing :wq. Then it is safe to run the following step
 ```
 $[vagrant@node-21~] /usr/local/kafka/bin/kafka-server-start.sh /usr/local/kafka/config/server21.properties &
 ```
 
-then test to create topics and start produce and consumer commands. (Not sure how to do this now)
+Finally test to create topics and start produce and consumer commands. (Not sure how to do this now)
 
 # 6. Web UI
 You can check the following URLs to monitor the Hadoop daemons.
