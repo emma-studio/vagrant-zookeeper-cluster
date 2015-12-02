@@ -153,7 +153,8 @@ vagrant ssh node-21
 ```
 And run the following command:
 
-1. ```$[vagrant@node-21~] sudo $SPARK_HOME/sbin/start-all.sh
+```
+$[vagrant@node-21~] sudo $SPARK_HOME/sbin/start-all.sh
 ```
 
 ### Test Spark on YARN
