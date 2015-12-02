@@ -105,9 +105,11 @@ vagrant ssh node-21
 ```
 And launch following commands to start HDFS.
 
-1. ```$[vagrant@node-21~] sudo $HADOOP_PREFIX/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR --script hdfs start namenode
 ```
-2.```$[vagrant@node-21~] sudo $HADOOP_PREFIX/sbin/hadoop-daemons.sh --config $HADOOP_CONF_DIR --script hdfs start datanode
+1. $[vagrant@node-21~] sudo $HADOOP_PREFIX/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR --script hdfs start namenode
+```
+```
+2. $[vagrant@node-21~] sudo $HADOOP_PREFIX/sbin/hadoop-daemons.sh --config $HADOOP_CONF_DIR --script hdfs start datanode
 ```
 
 Start a new terminal window and SSH into node22 
@@ -116,9 +118,11 @@ vagrant ssh node-22
 ```
 And implement following commands to start YARN (password is vagrant).
 
-1. ```$[vagrant@node-22~] sudo $HADOOP_YARN_HOME/sbin/yarn-daemon.sh --config $HADOOP_CONF_DIR start resourcemanager
 ```
-2. ```$[vagrant@node-22~] sudo $HADOOP_YARN_HOME/sbin/yarn-daemons.sh --config $HADOOP_CONF_DIR start nodemanager
+1. $[vagrant@node-22~] sudo $HADOOP_YARN_HOME/sbin/yarn-daemon.sh --config $HADOOP_CONF_DIR start resourcemanager
+```
+```
+2. $[vagrant@node-22~] sudo $HADOOP_YARN_HOME/sbin/yarn-daemons.sh --config $HADOOP_CONF_DIR start nodemanager
 ```
 
 Now, you might need to open another terminal and ssh to login node22 
@@ -127,9 +131,11 @@ vagrant ssh node-22
 ```
 And run following commands
 
-3. ```$[vagrant@node-22~] sudo $HADOOP_YARN_HOME/sbin/yarn-daemon.sh start proxyserver --config $HADOOP_CONF_DIR
 ```
-4. ```$[vagrant@node-22~] sudo $HADOOP_PREFIX/sbin/mr-jobhistory-daemon.sh start historyserver --config $HADOOP_CONF_DIR
+3. $[vagrant@node-22~] sudo $HADOOP_YARN_HOME/sbin/yarn-daemon.sh start proxyserver --config $HADOOP_CONF_DIR
+```
+```
+4. $[vagrant@node-22~] sudo $HADOOP_PREFIX/sbin/mr-jobhistory-daemon.sh start historyserver --config $HADOOP_CONF_DIR
 ```
 
 ### Test YARN
