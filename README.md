@@ -158,7 +158,16 @@ $[vagrant@node-21~] sudo $SPARK_HOME/sbin/start-all.sh
 ```
 
 ### Test Spark on YARN
-Start a new termial if necessary. There is a defect in spark when deploying it on virtual nodes. Even we set JAVA_HOME correctly, it cannot find it. So we will change those codes manually by following these steps:
+Start a new termial if necessary. You can test if Spark can run on YARN by issuing the following command. Try NOT to run this command on the slave nodes.
+```
+$[vagrant@node-21~] sudo $SPARK_HOME/bin/spark-submit --class org.apache.spark.examples.SparkPi \
+--master yarn-cluster \
+--num-executors 10 \
+--executor-cores 2 \
+/usr/local/spark/lib/spark-examples*.jar \
+100
+```
+If it says JAVA_HOME not set, you can fix this by following steps below:
 ```
 $[vagrang@node-21~] sudo vi /usr/local/spark/bin/spark-class
 ```
@@ -170,17 +179,7 @@ else
    echo "Set RUNNER to default java directory"
    # exit 1
 ```
-Next, log out node 21 and ssh to it again. 
-
-You can test if Spark can run on YARN by issuing the following command. Try NOT to run this command on the slave nodes.
-```
-$[vagrant@node-21~] sudo $SPARK_HOME/bin/spark-submit --class org.apache.spark.examples.SparkPi \
---master yarn-cluster \
---num-executors 10 \
---executor-cores 2 \
-/usr/local/spark/lib/spark-examples*.jar \
-100
-```
+Next, log out node 21 and ssh to it again. Repeate spark command.
 
 ### Test Spark using Shell
 Start the Spark shell using the following command. Try NOT to run this command on the slave nodes.
@@ -226,10 +225,22 @@ export KAFKA_HEAP_OPTS="-Xmx256M -Xms128M"
 ```
 save exit by pressing :wq. Then it is safe to run the following step
 ```
-$[vagrant@node-21~] /usr/local/kafka/bin/kafka-server-start.sh /usr/local/kafka/config/server21.properties &
+$[vagrant@node-21~] sudo /usr/local/kafka/bin/kafka-server-start.sh /usr/local/kafka/config/server21.properties &
 ```
-
-Finally test to create topics and start produce and consumer commands. (Not sure how to do this now)
+If it gives you java not found, you can fix this by steps below:
+```
+$[vagrant@node-21~] sudo vi /usr/local/kafka/bin/kafka-run-class.sh
+```
+Change codes from line 101 to 106 in this file related to JAVA_HOME to:
+```
+# Which java to use
+if [ -z "$JAVA_HOME" ]; then
+  JAVA="/usr/local/java/bin/java"
+else
+  JAVA="/usr/local/java/bin/java"
+fi
+```
+Save exit, might need to log out and log in again to make revised .sh script work. 
 
 # 6. Web UI
 You can check the following URLs to monitor the Hadoop daemons.
