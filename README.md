@@ -88,58 +88,57 @@ After you have provisioned the cluster, you need to run some commands to initial
 ```
 vagrant ssh node-21
 ```
-On node-21, the command below requires root permissions. Change to root access:
+On node-21, the command below requires root permissions. Commands below sometimes require password. They are all the same (password is "vagrant", without double quotes). Change to root access :
 ```
-$[vagrant@node-21~] sudo su
+$[vagrant@node-21~] sudo -
 ```
-Issue the following command:
+Type in password (vagrant) and Issue the following command:
 ```
 $[root@node-21~] $HADOOP_PREFIX/bin/hdfs namenode -format
 ```
 
 ## Start Hadoop Daemons (HDFS + YARN)
-Commands below sometimes require password. They are all the same (password is "vagrant", without double quotes).
-SSH into node21 
+
+SSH into node21 and use root access: 
 ```
 vagrant ssh node-21
+```
+```
+$[vagrant@node-21~] su -
 ```
 And launch following commands to start HDFS.
 
 ```
-1. $[vagrant@node-21~] sudo $HADOOP_PREFIX/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR --script hdfs start namenode
+1. $[root@node-21~] $HADOOP_PREFIX/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR --script hdfs start namenode
 ```
 ```
-2. $[vagrant@node-21~] sudo $HADOOP_PREFIX/sbin/hadoop-daemons.sh --config $HADOOP_CONF_DIR --script hdfs start datanode
+2. $[root@node-21~] $HADOOP_PREFIX/sbin/hadoop-daemons.sh --config $HADOOP_CONF_DIR --script hdfs start datanode
 ```
 
-Start a new terminal window and SSH into node22 
+Start a new terminal window and SSH into node22 using root access:
 ```
 vagrant ssh node-22
 ```
 And implement following commands to start YARN (password is vagrant).
 
 ```
-1. $[vagrant@node-22~] sudo $HADOOP_YARN_HOME/sbin/yarn-daemon.sh --config $HADOOP_CONF_DIR start resourcemanager
+1. $[root@node-22~] $HADOOP_YARN_HOME/sbin/yarn-daemon.sh --config $HADOOP_CONF_DIR start resourcemanager
 ```
 ```
-2. $[vagrant@node-22~] sudo $HADOOP_YARN_HOME/sbin/yarn-daemons.sh --config $HADOOP_CONF_DIR start nodemanager
+2. $[root@node-22~] $HADOOP_YARN_HOME/sbin/yarn-daemons.sh --config $HADOOP_CONF_DIR start nodemanager
 ```
 
-Now, you might need to open another terminal and ssh to login node22 
-```
-vagrant ssh node-22
-```
-And run following commands
+Now, if it stops on the previous command, press "enter" to enter following commands:
 
 ```
-3. $[vagrant@node-22~] sudo $HADOOP_YARN_HOME/sbin/yarn-daemon.sh start proxyserver --config $HADOOP_CONF_DIR
+3. $[root@node-22~] $HADOOP_YARN_HOME/sbin/yarn-daemon.sh start proxyserver --config $HADOOP_CONF_DIR
 ```
 ```
-4. $[vagrant@node-22~] sudo $HADOOP_PREFIX/sbin/mr-jobhistory-daemon.sh start historyserver --config $HADOOP_CONF_DIR
+4. $[root@node-22~] $HADOOP_PREFIX/sbin/mr-jobhistory-daemon.sh start historyserver --config $HADOOP_CONF_DIR
 ```
 
 ### Test YARN
-Run the following command to make sure you can run a MapReduce job.
+Run the following command on node21 to make sure you can run a MapReduce job.
 
 ```
 yarn jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.2.jar pi 2 100
@@ -147,20 +146,16 @@ yarn jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.
 
 ## Start Spark
 
-Start a new terminal and SSH to node21 
-```
-vagrant ssh node-21
-```
-And run the following command:
+On node 21, run the following command:
 
 ```
-$[vagrant@node-21~] sudo $SPARK_HOME/sbin/start-all.sh
+$[root@node-21~] $SPARK_HOME/sbin/start-all.sh
 ```
 
 ### Test Spark on YARN
-Start a new termial if necessary. You can test if Spark can run on YARN by issuing the following command. Try NOT to run this command on the slave nodes.
+You can test if Spark can run on YARN by issuing the following command. Try NOT to run this command on the slave nodes.
 ```
-$[vagrant@node-21~] sudo $SPARK_HOME/bin/spark-submit --class org.apache.spark.examples.SparkPi \
+$[root@node-21~] $SPARK_HOME/bin/spark-submit --class org.apache.spark.examples.SparkPi \
 --master yarn-cluster \
 --num-executors 10 \
 --executor-cores 2 \
@@ -169,7 +164,7 @@ $[vagrant@node-21~] sudo $SPARK_HOME/bin/spark-submit --class org.apache.spark.e
 ```
 If it says JAVA_HOME not set, you can fix this by following steps below:
 ```
-$[vagrang@node-21~] sudo vi /usr/local/spark/bin/spark-class
+$[root@node-21~] vi /usr/local/spark/bin/spark-class
 ```
 Then revise codes where to identify java directory to these:
 ```
@@ -185,7 +180,7 @@ Next, log out node 21 and ssh to it again. Repeate spark command.
 Start the Spark shell using the following command. Try NOT to run this command on the slave nodes.
 
 ```
-$[vagrant@node-21~] sudo $SPARK_HOME/bin/spark-shell --master spark://node21:7077
+$[root@node-21~] $SPARK_HOME/bin/spark-shell --master spark://node21:7077
 ```
 
 Then go here https://spark.apache.org/docs/latest/quick-start.html to start the tutorial. Most likely, you will have to load data into HDFS to make the tutorial work (Spark cannot read data on the local file system).
@@ -194,30 +189,18 @@ Then go here https://spark.apache.org/docs/latest/quick-start.html to start the 
 first vagrant ssh to a node and check if /tmp/zookeeper exists on this node (Note: /tmp/zookeeper is the dataDir propery specified in zookeeper.properties under /usr/local/kafka/config and zoo.cfg under /usr/local/zookeeper/conf. You can define the directory by yourself, but should change them in zookeeper.properties and in zoo.cfg). This folder must exist before running following commands.
 
 Launch this command to start zookeeper:
-(you need in root access, so first sudo su)
+(you need in root access and start three nodes together and repeat start zookeeper steps for each node)
 ```
-$[vagrant@node] sudo su
-```
-```
-$[root@node] /usr/local/kafka/bin/zookeeper-server-start.sh /usr/local/kafka/config/zookeeper.properties > /tmp/zookeeper.log &
-```
-
-or do this in three steps
-```
-$[vagrant@node] sudo vi /tmp/zookeeper.log
-```
-write nothing then save exit (press esc and press :wq)
-```
-$[vagrant@node] sudo su
+$[vagrant@node] su - 
 ```
 ```
-$[root@node] /usr/local/kafka/bin/zookeeper-server-start.sh /usr/local/kafka/config/zookeeper.properties &
+$[root@node] /usr/local/kafka/bin/zookeeper-server-start.sh /usr/local/kafka/config/zookeeper.properties
 ```
 
-Next, launch this command to start kafka broker (assume you are on node 21 now)
+Next, launch this command to start kafka broker (by default, we assign node-21 as zookeeper.connect, therefore you can only start kafka server on node-21. You feel free to change this value)
 (Note: by default, kafka thinks Java Runtime Environment is at least 1G, so in our case, each virtual node has at most 1G memory, so you need to change KAFKA_HEAP_OPTS in kafka-server-start.sh)
 ```
-$[vagrant@node] sudo vi /usr/local/kafka/bin/kafka-server-start.sh
+$[root@node] vi /usr/local/kafka/bin/kafka-server-start.sh
 ```
 change line of code relating to KAFKA_HEAP_OPTS in kafka-server-start.sh to (press a to insert):
 ```
@@ -225,11 +208,11 @@ export KAFKA_HEAP_OPTS="-Xmx256M -Xms128M"
 ```
 save exit by pressing :wq. Then it is safe to run the following step
 ```
-$[vagrant@node-21~] sudo /usr/local/kafka/bin/kafka-server-start.sh /usr/local/kafka/config/server21.properties &
+$[root@node-21~] /usr/local/kafka/bin/kafka-server-start.sh /usr/local/kafka/config/server21.properties
 ```
 If it gives you java not found, you can fix this by steps below:
 ```
-$[vagrant@node-21~] sudo vi /usr/local/kafka/bin/kafka-run-class.sh
+$[root@node-21~] vi /usr/local/kafka/bin/kafka-run-class.sh
 ```
 Change codes from line 101 to 106 in this file related to JAVA_HOME to:
 ```
@@ -255,6 +238,7 @@ This project was put together with great pointers from all around the internet. 
 Primaily this project is forked from [Jee Vang's vagrant project](https://github.com/vangj/vagrant-hadoop-2.4.1-spark-1.0.1)
 
 # 8. Copyright Stuff
+Redesigned and revised based on Maloy Manna's project framework
 Copyright 2014 Maloy Manna
 
 Licensed under the Apache License, Version 2.0 (the "License");
