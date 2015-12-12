@@ -59,6 +59,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 			end
 			# node.vm.provision "shell", path: "scripts/setup-zookeeper.sh"
 			node.vm.provision "shell", path: "scripts/setup-kafka.sh"
+			# node.vm.provision "shell", path: "scripts/setup-oryx1.sh"
+			# node.vm.provision "shell", path: "scripts/setup-oryx2.sh"
+			node.vm.synced_folder "./resources/oryx/", "/home/vagrant/oryx/"
+			node.vm.synced_folder "./resources/oryx2/", "/home/vagrant/oryx2/"
 		end
 	end
 end

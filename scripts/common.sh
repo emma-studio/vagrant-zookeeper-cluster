@@ -32,6 +32,12 @@ KAFKA_MIRROR_DOWNLOAD=../resources/kafka_2.9.1-0.8.2.2.tgz
 KAFKA_RES_DIR=/vagrant/resources/kafka
 #KAFKA_CONF_DIR=/usr/local/kafka/config
 KAFKA_CONF=/usr/local/kafka/config
+#oryx1
+ORYX1_RES_DIR=/vagrant/resources/oryx1
+ORYX1_CONF_DIR=/usr/local/oryx1
+#oryx2
+ORYX2_RES_DIR=/vagrant/resources/oryx2
+ORYX2_CONF_DIR=/usr/local/oryx2
 #ssh
 SSH_RES_DIR=/vagrant/resources/ssh
 RES_SSH_COPYID_ORIGINAL=$SSH_RES_DIR/ssh-copy-id.original
