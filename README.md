@@ -59,12 +59,18 @@ To add/remove slaves, change the number of nodes:
 To modify VM memory change the following line:  
 ```v.customize ["modifyvm", :id, "--memory", "1024"]```  
 3. /scripts/common.sh  
-To use a different version of Java, change the following lines of codes depending on the version you downloaded to /resources directory.  
-```JAVA_ARCHIVE=jdk-8u25-linux-i586.tar.gz```
+To use a different version of Java, change the following lines of codes depending on the version you downloaded to /resources directory. 
+```
+JAVA_ARCHIVE=jdk-8u25-linux-i586.tar.gz
+```
 To use a different version of Hadoop you've already downloaded to /resources directory, change the following line:  
-```HADOOP_VERSION=hadoop-2.6.2```  
+```
+HADOOP_VERSION=hadoop-2.6.2
+```
 To use a different version of Hadoop to be downloaded, change the remote URL in the following line:  
-```HADOOP_MIRROR_DOWNLOAD=http://apache.crihan.fr/dist/hadoop/common/stable/hadoop-2.6.2.tar.gz```  
+```
+HADOOP_MIRROR_DOWNLOAD=http://apache.crihan.fr/dist/hadoop/common/stable/hadoop-2.6.2.tar.gz
+```  
 To use a different version of other tools, follow similar steps here to change corresponding lines of codes 
 
 4. /scripts/setup-java.sh  
